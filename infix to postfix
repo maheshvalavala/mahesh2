@@ -1,0 +1,73 @@
+//A C program for infix to postfix conversion using stack
+
+#include <stdio.h>
+#include <ctype.h>
+#define MAX 100           
+char stack[MAX];
+int key=-1;       
+ push(char elem)
+{                       
+    stack[++key]=elem;
+}
+ char pop()
+{                      
+    return(stack[key--]);
+}
+ int pr(char symbol)
+{                 
+    if(symbol == '^')
+	{
+		return(3);
+	}
+	else if(symbol == '*' || symbol == '/')
+	{
+		return(2);
+	}
+	else if(symbol == '+' || symbol == '-')          
+	{
+                       return(1);
+                 }
+	else
+	{
+		return(0);
+	}
+}
+
+void main()
+{                        
+    char infix[80],postfix[80],ch,elem;
+    int i=0,t=0;
+    printf("Enter Infix Expression : ");
+    scanf("%s",infix);
+    push('#');
+    while( (ch=infix[i++]) != '\0')
+    {
+        if( ch == '(') push(ch);
+        else
+            if(isalnum(ch)) postfix[t++]=ch;
+            else
+                if( ch == ')')
+                {
+                    while( stack[key] != '(')
+                        postfix[t++]=pop();
+                    elem=pop(); 
+                }
+                else
+                {       
+                    while( pr(stack[key]) >= pr(ch) )
+                        postfix[t++]=pop();
+                    push(ch);
+                }
+    }
+    while( stack[key] != '#')     
+        postfix[t++]=pop();
+    postfix[t]='\0';          
+    printf("\nPostfix Expression =  %s\n",postfix);
+}
+
+
+
+Output:
+Enter  infix expression :  P+Q*R+S
+Postfix expression = PQR*+S+
+
